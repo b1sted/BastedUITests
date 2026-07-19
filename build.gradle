@@ -24,4 +24,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    systemProperty 'baseUrl', System.getProperty('baseUrl', 'https://basted.ru')
 }
