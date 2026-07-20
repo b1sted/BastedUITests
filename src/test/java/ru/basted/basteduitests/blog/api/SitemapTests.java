@@ -5,20 +5,24 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.Set;
 
+import org.aeonbits.owner.ConfigFactory;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ru.basted.basteduitests.config.ProjectConfig;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SitemapTests {
-    private final String baseUrl = System.getProperty("baseUrl", "https://basted.ru");
+    private static final ProjectConfig CONFIG = ConfigFactory.create(ProjectConfig.class, System.getProperties());
+
     private final BlogApiHelper apiHelper = new BlogApiHelper();
 
     @Test
     @DisplayName("Проверка доступности всех URL из sitemap.xml")
     public void sitemapUrlsShouldReturn200() {
-        HttpResponse<InputStream> response = apiHelper.getSitemapStream(baseUrl + "/sitemap.xml");
+        HttpResponse<InputStream> response = apiHelper.getSitemapStream(CONFIG.siteUrl() + "/sitemap.xml");
         assertThat(response.statusCode())
                 .as("Статус-код запроса получения sitemap.xml")
                 .isEqualTo(200);
