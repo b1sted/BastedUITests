@@ -20,9 +20,11 @@ dependencies {
     testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
     testImplementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4jVersion}"
     testImplementation "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+
+    testImplementation "org.aeonbits.owner:owner:${ownerVersion}"
 }
 
 test {
     useJUnitPlatform()
-    systemProperty 'baseUrl', System.getProperty('baseUrl', 'https://basted.ru')
+    systemProperties = System.getProperties() as Map<String, ? extends Object>
 }
