@@ -9,9 +9,9 @@ import ru.basted.basteduitests.config.converters.SecondsDurationConverter;
 
 @Config.Sources({"classpath:config.properties"})
 public interface ProjectConfig extends Config {
-    @Key("site.url")
+    @Key("base.url")
     @DefaultValue("https://basted.ru")
-    String siteUrl();
+    String baseUrl();
 
     /**
      * Таймаут явных ожиданий (Explicit Wait) для {@link org.openqa.selenium.support.ui.WebDriverWait}.
