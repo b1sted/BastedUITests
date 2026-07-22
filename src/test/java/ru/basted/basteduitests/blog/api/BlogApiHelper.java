@@ -15,8 +15,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jspecify.annotations.NonNull;
-
 public class BlogApiHelper {
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -39,7 +37,7 @@ public class BlogApiHelper {
      * @param response HTTP-ответ, где тело (body) представлено в виде {@link InputStream}
      * @return Список абсолютных ссылок сайта
      */
-    public Set<String> extractUrlsFromSitemap(@NonNull HttpResponse<InputStream> response) {
+    public Set<String> extractUrlsFromSitemap(HttpResponse<InputStream> response) {
         try (InputStream xmlStream = response.body()) {
             return parseLocUrls(xmlStream);
         } catch (Exception e) {
@@ -54,7 +52,7 @@ public class BlogApiHelper {
      * @param urls список уникальных абсолютных ссылок сайта
      * @return Карту результатов в формате "Ссылка -> Http статус-код"
      */
-    public Map<String, Integer> checkUrlsStatuses(@NonNull Set<String> urls) {
+    public Map<String, Integer> checkUrlsStatuses(Set<String> urls) {
         Map<String, Integer> urlsStatuses = new HashMap<>();
 
         for (String url : urls) {
