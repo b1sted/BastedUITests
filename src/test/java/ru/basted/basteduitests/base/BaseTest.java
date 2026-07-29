@@ -13,8 +13,6 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import org.jspecify.annotations.Nullable;
-
 import ru.basted.basteduitests.config.BrowserType;
 import ru.basted.basteduitests.config.Configs;
 
@@ -25,7 +23,6 @@ import ru.basted.basteduitests.config.Configs;
  * и закрытие сессий WebDriver (браузера) до и после каждого теста.
  */
 public abstract class BaseTest {
-    @Nullable
     protected WebDriver webDriver;
 
     @BeforeEach
