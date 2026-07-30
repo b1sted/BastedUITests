@@ -73,6 +73,22 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
+     * Переходит на предыдущую страницу в истории браузера через
+     * {@link org.openqa.selenium.WebDriver.Navigation#back()} и трактует результат
+     * как страницу типа {@code pageClass}.
+     * <p>
+     * Не проверяет, что после перехода вы действительно оказались на этой странице —
+     * ответственность за корректность типа лежит на вызывающем коде. Для проверки
+     * фактической загрузки страницы используйте {@link #isPageLoaded()} после вызова.
+     *
+     * @param pageClass ожидаемый класс страницы после перехода назад
+     */
+    public <P extends BasePage<P>> P navigateBack(Class<P> pageClass) {
+        webDriver.navigate().back();
+        return this.as(pageClass);
+    }
+
+    /**
      * Возвращает URL, на который должна была перейти страница — строится
      * так же, как в {@link #open(Object...)}, но без реальной навигации.
      * Используется для сравнения с фактическим URL браузера в проверках.
