@@ -6,10 +6,11 @@ import org.openqa.selenium.WebDriver;
 import ru.basted.basteduitests.annotations.PageInfo;
 import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.BasePage;
+import ru.basted.basteduitests.base.HasBackButton;
 
 @PageInfo(siteEntity = "Блог", title = "Блог")
 @PagePath("/blog")
-public final class BlogPage extends BasePage<BlogPage> {
+public final class BlogPage extends BasePage<BlogPage> implements HasBackButton {
     private final By sectionTitleLocator = By.cssSelector("h2[class*='section']");
 
     public BlogPage(WebDriver webDriver) {

@@ -6,10 +6,11 @@ import org.openqa.selenium.WebDriver;
 import ru.basted.basteduitests.annotations.PageInfo;
 import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.BasePage;
+import ru.basted.basteduitests.base.HasBackButton;
 
 @PageInfo(siteEntity = "Блог", title = "Обо мне")
 @PagePath("/about")
-public final class AboutPage extends BasePage<AboutPage> {
+public final class AboutPage extends BasePage<AboutPage> implements HasBackButton {
     private final By academicToggleLabelLocator = By.cssSelector("label[class*='academic']");
 
     public AboutPage(WebDriver webDriver) {
