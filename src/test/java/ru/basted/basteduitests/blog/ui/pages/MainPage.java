@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 import ru.basted.basteduitests.annotations.PageInfo;
 import ru.basted.basteduitests.annotations.PagePath;
+import ru.basted.basteduitests.base.AbstractPageCore;
 import ru.basted.basteduitests.base.BasePage;
 import ru.basted.basteduitests.base.HasBackButton;
 
@@ -30,7 +31,7 @@ public final class MainPage extends BasePage<MainPage> implements HasBackButton 
      * @param expectedPageClass класс страницы, на которую должен произойти переход
      * @return Объект целевой страницы
      */
-    public <P extends BasePage<P>> P clickNavigationMenuLink(
+    public <P extends AbstractPageCore<P>> P clickNavigationMenuLink(
             String ariaLabel,
             Class<P> expectedPageClass
     ) {
