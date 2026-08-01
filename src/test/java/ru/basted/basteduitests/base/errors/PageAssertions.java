@@ -26,7 +26,7 @@ public final class PageAssertions {
      * @param actual    фактическое значение
      * @return Fluent-assert AssertJ для дальнейшей цепочки вызовов
      */
-    public static AbstractStringAssert<?> assertPageCheck(
+    public static AbstractStringAssert<?> assertPageEquals(
             PageState pageState,
             Check check,
             Object expected,
@@ -38,7 +38,7 @@ public final class PageAssertions {
     }
 
     /**
-     * Аналог {@link #assertPageCheck(PageState, Check, Object, Object)}, но не бросает
+     * Аналог {@link #assertPageEquals(PageState, Check, Object, Object)}, но не бросает
      * исключение немедленно — несовпадение накапливается в {@code softly} и проявится
      * только при вызове {@link SoftAssertions#assertAll()}.
      * <p>
@@ -53,7 +53,7 @@ public final class PageAssertions {
      * @param expected  ожидаемое значение
      * @param actual    фактическое значение
      */
-    public static void assertPageCheck(
+    public static void softAssertPageEquals(
             SoftAssertions softly,
             PageState pageState,
             Check check,
@@ -63,6 +63,33 @@ public final class PageAssertions {
         softly.assertThat(actual.toString())
                 .withFailMessage(buildFailMessage(pageState, check, expected, actual))
                 .isEqualTo(expected.toString());
+    }
+
+    /**
+     * Аналог {@link #softAssertPageEquals(SoftAssertions, PageState, Check, Object, Object)},
+     * но проверяет не точное равенство, а вхождение {@code expected} в {@code actual}
+     * (см. {@link AbstractStringAssert#contains(CharSequence...)}).
+     * <p>
+     * Несовпадение накапливается в {@code softly} и проявится только при вызове
+     * {@link SoftAssertions#assertAll()}.
+     *
+     * @param softly    накопитель проверок; {@link SoftAssertions#assertAll()} должен быть
+     *                  вызван вызывающим кодом после всех проверок
+     * @param pageState состояние страницы (раздел сайта, заголовок), используется для контекста ошибки
+     * @param check     тип проверки, определяющий формат контекста и текста ошибки
+     * @param expected  ожидаемая подстрока
+     * @param actual    фактическое значение, в котором ищется подстрока
+     */
+    public static void softAssertPageContains(
+            SoftAssertions softly,
+            PageState pageState,
+            Check check,
+            Object expected,
+            Object actual
+    ) {
+        softly.assertThat(actual.toString())
+                .withFailMessage(buildFailMessage(pageState, check, expected, actual))
+                .contains(expected.toString());
     }
 
     private static String buildFailMessage(PageState pageState, Check check, Object expected, Object actual) {
