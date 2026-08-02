@@ -87,6 +87,8 @@ public final class MainPageTest extends BaseTest {
             externalPage.closeCurrentTab();
             externalPage.switchToTab(previousTab);
         }
+
+        softly.assertAll();
     }
 
     @Test
