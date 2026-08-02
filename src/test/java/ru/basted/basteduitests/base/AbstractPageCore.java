@@ -48,14 +48,20 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
     }
 
     /**
-     * Создаёт объект целевой страницы через reflection.
+     * Создаёт объект страницы через reflection, без привязки к текущему объекту.
+     * <p>
+     * В отличие от {@link #as(Class)}, который используется внутри методов
+     * конкретных страниц (после клика/навигации), этот метод предназначен
+     * для случаев, когда страницу нужно создать "с нуля" — например,
+     * в тестах при итерации по списку классов страниц.
      *
      * @param pageClass класс страницы; обязан иметь публичный конструктор,
      *                   принимающий единственный параметр {@link WebDriver}
+     * @param webDriver драйвер, с которым будет создана страница
      * @throws RuntimeException если у {@code pageClass} нет такого конструктора
      *                           или его вызов завершился ошибкой
      */
-    protected <P extends AbstractPageCore<P>> P as(Class<P> pageClass) {
+    public static <P extends AbstractPageCore<P>> P instantiate(Class<P> pageClass, WebDriver webDriver) {
         try {
             return pageClass.getDeclaredConstructor(WebDriver.class).newInstance(webDriver);
         } catch (Exception ex) {
@@ -63,6 +69,19 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
                     ErrorMessages.buildErrorMessage("Ошибка инициализации страницы: " + pageClass.getSimpleName()), ex
             );
         }
+    }
+
+    /**
+     * Создаёт объект целевой страницы через reflection, используя {@link WebDriver}
+     * текущего объекта. См. {@link #instantiate(Class, WebDriver)}.
+     *
+     * @param pageClass класс страницы; обязан иметь публичный конструктор,
+     *                   принимающий единственный параметр {@link WebDriver}
+     * @throws RuntimeException если у {@code pageClass} нет такого конструктора
+     *                           или его вызов завершился ошибкой
+     */
+    public <P extends AbstractPageCore<P>> P as(Class<P> pageClass) {
+        return instantiate(pageClass, webDriver);
     }
 
     /**
@@ -109,9 +128,20 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
         return resolveUrl(pathParams);
     }
 
-    protected String getPageTitle() {
+    public String getPageTitle() {
+        String title = webDriver.getTitle();
+        if (title == null) {
+            throw new IllegalStateException(
+                    ErrorMessages.buildErrorMessage("Selenium WebDriver вернул null вместо заголовка страницы")
+            );
+        }
+
+        return title;
+    }
+
+    protected String getPageName() {
         PageInfo annotation = AnnotationUtils.getAnnotation(this.getClass(), PageInfo.class);
-        return (annotation != null) ? annotation.title() : "Неизвестная страница";
+        return (annotation != null) ? annotation.name() : "Неизвестная страница";
     }
 
     public PageState state() {
@@ -120,7 +150,7 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
             return new PageState("Неизвестная сущность", "Неизвестная страница");
         }
 
-        return new PageState(annotation.siteEntity(), annotation.title());
+        return new PageState(annotation.siteEntity(), annotation.name());
     }
 
     public String switchToNewTab() {
@@ -142,7 +172,7 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
         webDriver.close();
     }
 
-    protected void click(By locator) {
+    public void click(By locator) {
         WebElement element = waitForClickable(locator);
         click(element);
     }
@@ -152,7 +182,7 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
      * если стандартный клик перехвачен другим элементом
      * ({@link ElementClickInterceptedException}).
      */
-    protected void click(WebElement element) {
+    public void click(WebElement element) {
         try {
             element.click();
         } catch (ElementClickInterceptedException ex) {
@@ -163,13 +193,22 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
         }
     }
 
+    public String getText(By locator) {
+        WebElement element = waitForVisible(locator);
+        return element.getText();
+    }
+
     protected WebElement waitForClickable(By locator) {
         return webDriverWait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
+    protected WebElement waitForVisible(By locator) {
+        return webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
     protected boolean isElementVisible(By locator) {
         try {
-            webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            waitForClickable(locator);
             return true;
         } catch (TimeoutException ex) {
             return false;
