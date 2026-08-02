@@ -1,18 +1,24 @@
 package ru.basted.basteduitests.blog.ui;
 
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ru.basted.basteduitests.base.AbstractPageCore;
+import ru.basted.basteduitests.base.BasePage;
 import ru.basted.basteduitests.base.BaseTest;
-import ru.basted.basteduitests.base.HasBackButton;
+import ru.basted.basteduitests.base.capabilities.HasArticles;
+import ru.basted.basteduitests.base.capabilities.HasBackButton;
+import ru.basted.basteduitests.base.capabilities.PageCapabilities;
 import ru.basted.basteduitests.base.errors.PageAssertions;
 import ru.basted.basteduitests.base.errors.PageCheck;
 import ru.basted.basteduitests.base.errors.PageState;
 import ru.basted.basteduitests.blog.ui.pages.AboutPage;
+import ru.basted.basteduitests.blog.ui.pages.ArticlePage;
 import ru.basted.basteduitests.blog.ui.pages.AssemblyPage;
 import ru.basted.basteduitests.blog.ui.pages.BlogPage;
 import ru.basted.basteduitests.blog.ui.pages.ExternalPage;
@@ -93,5 +99,39 @@ public final class MainPageTest extends BaseTest {
             externalPage.closeCurrentTab();
             externalPage.switchToTab(previousTab);
         }
+    }
+
+    @Test
+    @DisplayName("BLOG-T4: Открытие контентных статей")
+    public void shouldOpenArticleWhenUserClicksOnCard() {
+        final List<Class<? extends AbstractPageCore<?>>> pagesWithArticles = List.of(AssemblyPage.class, BlogPage.class);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        for (Class<? extends AbstractPageCore<?>> pageClass : pagesWithArticles) {
+            @SuppressWarnings({"unchecked", "rawtypes"})
+            BasePage<?> pageWithArticles = ((BasePage<?>) AbstractPageCore.instantiate((Class) pageClass, webDriver))
+                    .open()
+                    .isPageLoaded();
+
+            ArticlePage articlePage = PageCapabilities.requireSupports(pageWithArticles, HasArticles.class,
+                    page -> page.openArticle(ArticlePage.class)).isPageLoaded();
+            PageState articleState = articlePage.state();
+
+            String expectedUrl = Pattern.quote(pageWithArticles.getExpectedUrl()) + "[a-zA-Z0-9-]+/?";
+            String currentUrl = articlePage.getCurrentUrl();
+            PageAssertions.softAssertPageMatches(softly, articleState, PageCheck.URL, expectedUrl, currentUrl);
+
+            String articleTitle = articlePage.getArticleTitle();
+            String pageTitle = formatPageTitleToComparison(articlePage.getPageTitle());
+            PageAssertions.softAssertPageMatches(softly, articleState, PageCheck.TITLE, articleTitle, pageTitle);
+        }
+
+        softly.assertAll();
+    }
+
+    private String formatPageTitleToComparison(String pageTitle) {
+        int endIndex = pageTitle.indexOf('|');
+        return pageTitle.substring(0, endIndex - 1);
     }
 }
