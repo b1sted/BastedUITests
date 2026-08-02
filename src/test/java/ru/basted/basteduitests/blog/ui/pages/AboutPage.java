@@ -8,7 +8,7 @@ import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.BasePage;
 import ru.basted.basteduitests.base.HasBackButton;
 
-@PageInfo(siteEntity = "Блог", title = "Обо мне")
+@PageInfo(siteEntity = "Блог", name = "Обо мне")
 @PagePath("/about")
 public final class AboutPage extends BasePage<AboutPage> implements HasBackButton {
     private final By academicToggleLabelLocator = By.cssSelector("label[class*='academic']");

@@ -8,7 +8,7 @@ import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.BasePage;
 import ru.basted.basteduitests.base.HasBackButton;
 
-@PageInfo(siteEntity = "Блог", title = "Изучаем Assembly NASM")
+@PageInfo(siteEntity = "Блог", name = "Изучаем Assembly NASM")
 @PagePath("/assembly")
 public final class AssemblyPage extends BasePage<AssemblyPage> implements HasBackButton {
     private final By expandButtonLocator = By.cssSelector("button[class*='assembly']");

@@ -8,7 +8,7 @@ import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.BasePage;
 import ru.basted.basteduitests.base.HasBackButton;
 
-@PageInfo(siteEntity = "Блог", title = "Блог")
+@PageInfo(siteEntity = "Блог", name = "Блог")
 @PagePath("/blog")
 public final class BlogPage extends BasePage<BlogPage> implements HasBackButton {
     private final By sectionTitleLocator = By.cssSelector("h2[class*='section']");

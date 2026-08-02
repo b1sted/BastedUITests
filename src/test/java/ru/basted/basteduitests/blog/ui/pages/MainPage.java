@@ -9,7 +9,7 @@ import ru.basted.basteduitests.base.AbstractPageCore;
 import ru.basted.basteduitests.base.BasePage;
 import ru.basted.basteduitests.base.HasBackButton;
 
-@PageInfo(siteEntity = "Блог", title = "Главная страница")
+@PageInfo(siteEntity = "Блог", name = "Главная страница")
 @PagePath("/")
 public final class MainPage extends BasePage<MainPage> implements HasBackButton {
     private final String navigationMenuLinkTemplate = "div .nav-menu a[aria-label*='%s']";
