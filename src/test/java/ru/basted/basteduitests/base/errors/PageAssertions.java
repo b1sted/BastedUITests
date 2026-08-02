@@ -92,6 +92,38 @@ public final class PageAssertions {
                 .contains(expected.toString());
     }
 
+    /**
+     * Аналог {@link #softAssertPageContains(SoftAssertions, PageState, Check, Object, Object)},
+     * но проверяет соответствие {@code actual} регулярному выражению из {@code expected}
+     * (см. {@link AbstractStringAssert#matches(CharSequence)}).
+     * <p>
+     * Несовпадение накапливается в {@code softly} и проявится только при вызове
+     * {@link SoftAssertions#assertAll()}.
+     * <p>
+     * Используется, когда сравнение должно быть не точным (см. {@link #softAssertPageEquals})
+     * и не по вхождению подстроки (см. {@link #softAssertPageContains}), а по шаблону —
+     * например, для URL с динамическим slug статьи или для заголовка страницы
+     * с переменным суффиксом.
+     *
+     * @param softly    накопитель проверок; {@link SoftAssertions#assertAll()} должен быть
+     *                  вызван вызывающим кодом после всех проверок
+     * @param pageState состояние страницы (раздел сайта, заголовок), используется для контекста ошибки
+     * @param check     тип проверки, определяющий формат контекста и текста ошибки
+     * @param expected  регулярное выражение, которому должно соответствовать значение
+     * @param actual    фактическое значение, проверяемое на соответствие шаблону
+     */
+    public static void softAssertPageMatches(
+            SoftAssertions softly,
+            PageState pageState,
+            Check check,
+            Object expected,
+            Object actual
+    ) {
+        softly.assertThat(actual.toString())
+                .withFailMessage(buildFailMessage(pageState, check, expected, actual))
+                .matches(expected.toString());
+    }
+
     private static String buildFailMessage(PageState pageState, Check check, Object expected, Object actual) {
         return ErrorMessages.buildErrorMessage(check.context(pageState), check.failMessage(expected, actual));
     }

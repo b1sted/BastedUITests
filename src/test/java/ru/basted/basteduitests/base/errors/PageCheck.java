@@ -1,7 +1,8 @@
 package ru.basted.basteduitests.base.errors;
 
 public enum PageCheck implements Check {
-    URL("%s -> %s -> Параметр: URL", "Ожидался URL '%s', но получен '%s'");
+    URL("%s -> %s -> Параметр: URL", "Ожидался URL '%s', но получен '%s'"),
+    TITLE("%s -> %s -> Параметр: Название страницы", "Ожидалось %s, но получено %s");
 
     private final String context;
     private final String failMessageTemplate;
