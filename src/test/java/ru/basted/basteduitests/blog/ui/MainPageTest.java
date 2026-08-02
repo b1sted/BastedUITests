@@ -23,7 +23,6 @@ import ru.basted.basteduitests.blog.ui.pages.AssemblyPage;
 import ru.basted.basteduitests.blog.ui.pages.BlogPage;
 import ru.basted.basteduitests.blog.ui.pages.ExternalPage;
 import ru.basted.basteduitests.blog.ui.pages.MainPage;
-import ru.basted.basteduitests.errors.ErrorMessages;
 
 @DisplayName("Главная страница")
 public final class MainPageTest extends BaseTest {
@@ -51,21 +50,10 @@ public final class MainPageTest extends BaseTest {
 
             String expectedUrl = genericPage.getExpectedUrl();
             String currentUrl = genericPage.getCurrentUrl();
-
             PageAssertions.softAssertPageEquals(softly, genericPage.state(), PageCheck.URL, expectedUrl, currentUrl);
 
-            if (genericPage instanceof HasBackButton backButtonPage) {
-                mainPage = backButtonPage.clickBackButton(MainPage.class);
-            } else {
-                PageState state = genericPage.state();
-                throw new UnsupportedOperationException(
-                        ErrorMessages.buildErrorMessage("Класс '%s' не имплементирует интерфейс '%s' (кнопка 'Назад' недоступна)"
-                                        .formatted(genericPage.getClass().getSimpleName(), HasBackButton.class.getSimpleName()),
-                                state.siteEntity(), state.pageTitle(), "Архитектура фреймворка")
-                );
-            }
-
-            mainPage.isPageLoaded();
+            mainPage = PageCapabilities.requireSupports(genericPage, HasBackButton.class,
+                    page -> page.clickBackButton(MainPage.class)).isPageLoaded();
         }
 
         softly.assertAll();
