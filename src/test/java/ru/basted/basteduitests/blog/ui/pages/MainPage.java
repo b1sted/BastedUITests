@@ -7,7 +7,7 @@ import ru.basted.basteduitests.annotations.PageInfo;
 import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.AbstractPageCore;
 import ru.basted.basteduitests.base.BasePage;
-import ru.basted.basteduitests.base.HasBackButton;
+import ru.basted.basteduitests.base.capabilities.HasBackButton;
 
 @PageInfo(siteEntity = "Блог", name = "Главная страница")
 @PagePath("/")

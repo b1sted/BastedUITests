@@ -1,6 +1,9 @@
-package ru.basted.basteduitests.base;
+package ru.basted.basteduitests.base.capabilities;
 
 import org.openqa.selenium.By;
+
+import ru.basted.basteduitests.base.AbstractPageCore;
+import ru.basted.basteduitests.base.BasePage;
 
 public interface HasBackButton {
     By BACK_BUTTON_LOCATOR = By.cssSelector("a[class*='back']");
