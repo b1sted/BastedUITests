@@ -1,5 +1,7 @@
 package ru.basted.basteduitests.base;
 
+import java.util.ArrayDeque;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.TimeoutException;
@@ -13,6 +15,7 @@ import ru.basted.basteduitests.annotations.AnnotationUtils;
 import ru.basted.basteduitests.annotations.PageInfo;
 import ru.basted.basteduitests.annotations.PagePath;
 import ru.basted.basteduitests.base.errors.PageState;
+import ru.basted.basteduitests.conditions.CustomConditions;
 import ru.basted.basteduitests.config.Configs;
 import ru.basted.basteduitests.errors.ErrorMessages;
 
@@ -29,6 +32,8 @@ import ru.basted.basteduitests.errors.ErrorMessages;
 public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
     protected final WebDriver webDriver;
     protected final WebDriverWait webDriverWait;
+
+    private final ArrayDeque<String> windowHistory = new ArrayDeque<>();
 
     protected AbstractPageCore(WebDriver webDriver) {
         this.webDriver = webDriver;
@@ -160,16 +165,21 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
         String previousTab = (String) windowHandles[windowHandles.length - 2];
 
         switchToTab(newTab);
+        windowHistory.push(previousTab);
 
-        return previousTab;
+        return waitForUrlToLeaveBlank();
     }
 
-    public void switchToTab(String windowHandle) {
-        webDriver.switchTo().window(windowHandle);
-    }
-
-    public void closeCurrentTab() {
+    public void returnToPreviousTab() {
         webDriver.close();
+
+        if (!windowHistory.isEmpty()) {
+            switchToTab(windowHistory.pop());
+        } else {
+            throw new IllegalStateException(
+                    ErrorMessages.buildErrorMessage("Нет сохраненных вкладок для возврата!")
+            );
+        }
     }
 
     public void click(By locator) {
@@ -206,6 +216,10 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
         return webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
+    protected String waitForUrlToLeaveBlank() {
+        return webDriverWait.until(CustomConditions.urlToChangeFrom("about:blank"));
+    }
+
     protected boolean isElementVisible(By locator) {
         try {
             waitForClickable(locator);
@@ -235,5 +249,9 @@ public abstract class AbstractPageCore<T extends AbstractPageCore<T>> {
 
         boolean hasTrailingSlash = url.charAt(url.length() - 1) == '/';
         return hasTrailingSlash ? url : url + '/';
+    }
+
+    private void switchToTab(String windowHandle) {
+        webDriver.switchTo().window(windowHandle);
     }
 }
