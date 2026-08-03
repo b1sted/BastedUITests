@@ -1,8 +1,8 @@
-<h3 align="center">BastedUiTests</h3>
+<h3 align="center">BastedTests</h3>
 
 <p align="center">
     <strong>
-    UI test automation suite for basted.ru using Selenium and Java
+    Automated UI and API test suite for basted.ru ecosystem using Selenium, Java 21 and JUnit 5
     </strong>
 </p>
 <p align="center">
@@ -42,7 +42,7 @@ Run the full test suite:
 
 Run a specific test class (example for the Blog site):
 ```bash
-./gradlew test --tests "ru.basted.basteduitests.blog.ui.MainPageTest"
+./gradlew test --tests "ru.basted.bastedtests.blog.ui.MainPageTest"
 ```
 
 ### Configuration
