@@ -79,13 +79,10 @@ public final class MainPageTest extends BaseTest {
             String domainToBeContain = redirectButton.getValue();
 
             ExternalPage externalPage = mainPage.clickNavigationMenuLink(ariaLabel, ExternalPage.class);
-            String previousTab = externalPage.switchToNewTab();
-
-            String currentUrl = externalPage.getCurrentUrl();
+            String currentUrl = externalPage.switchToNewTab();
             PageAssertions.softAssertPageContains(softly, externalPage.state(), PageCheck.URL, domainToBeContain, currentUrl);
 
-            externalPage.closeCurrentTab();
-            externalPage.switchToTab(previousTab);
+            externalPage.returnToPreviousTab();
         }
 
         softly.assertAll();
