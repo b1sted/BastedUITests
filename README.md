@@ -12,9 +12,49 @@
     </a>
 </p>
 <p align="center">
+    <a href="#test-cases">Test Cases</a> •
+    <a href="#running-tests">Running Tests</a> •
     <a href="#license">License</a>
 </p>
 <hr>
+
+## Test Cases
+
+Detailed specifications and current status for all test cases are maintained in the central registry: **[specs/README.md](./specs/README.md)**.
+
+### Target Sites
+
+- **[Blog (basted.ru)](https://basted.ru/)** — covered by automated UI and API tests
+- **[Lecture Notes (docs.basted.ru)](https://docs.basted.ru/)** — planned
+
+## Running Tests
+
+### Prerequisites
+
+- **JDK 21** or higher, available on your system `PATH`.
+
+### Execution
+
+Run the full test suite:
+```bash
+./gradlew test
+```
+
+Run a specific test class (example for the Blog site):
+```bash
+./gradlew test --tests "ru.basted.basteduitests.blog.ui.MainPageTest"
+```
+
+### Configuration
+
+Test behavior is configured via [`src/test/resources/config.properties`](./src/test/resources/config.properties), or overridden with `-D` system properties:
+```bash
+./gradlew test -Dbase.url=https://basted.ru -Dbrowser=firefox -Dheadless=false
+```
+
+### Test Reports
+
+After execution, HTML reports are available at `build/reports/tests/test/index.html`.
 
 ## License
 

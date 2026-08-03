@@ -1,20 +1,44 @@
+import net.ltgt.gradle.errorprone.CheckSeverity
+
 plugins {
     id 'java'
+    id 'net.ltgt.errorprone' version "${errorProneVersion}"
 }
 
 group = 'ru.basted'
-version = '1.0-SNAPSHOT'
+version = '0.1'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+
+    testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    testImplementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4jVersion}"
+    testImplementation "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+
+    testImplementation "org.aeonbits.owner:owner:${ownerVersion}"
+    testImplementation "org.jspecify:jspecify:${jspecifyVersion}"
+
+    errorprone "com.uber.nullaway:nullaway:${nullAwayVersion}"
+    errorprone "com.google.errorprone:error_prone_core:${errorProneCoreVersion}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone {
+        check("NullAway", CheckSeverity.ERROR)
+        option("NullAway:AnnotatedPackages", "ru.basted.basteduitests")
+    }
 }
 
 test {
     useJUnitPlatform()
+    systemProperties = System.getProperties() as Map<String, ? extends Object>
 }
